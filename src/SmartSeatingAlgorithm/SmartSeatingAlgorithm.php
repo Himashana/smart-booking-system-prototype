@@ -54,6 +54,18 @@
                         }
                     }
                 }
+
+                // If no normal seats are available, allocate the special seats
+                if (!self::isAnyNormalSeatAvailable($gridMatrix)) {
+                    for ($row = 0; $row < count($gridMatrix); $row++) {
+                        for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
+                            if ($gridMatrix[$row][$col] == 0 && self::isSpecialSeat($row, $col)) {
+                                $gridMatrix[$row][$col] = 1;
+                                return $gridMatrix;
+                            }
+                        }
+                    }
+                }
             } elseif ($audienceType == audienceTypes['GROUP']) {
                 $insetCount = 0;
                 foreach ($subset as $offset => $row) {
@@ -246,6 +258,17 @@
             }
 
             return $maxRow;
+        }
+
+        private static function isAnyNormalSeatAvailable($gridMatrix) {
+            foreach ($gridMatrix as $rowIndex => $row) {
+                foreach ($row as $colIndex => $seat) {
+                    if ($seat === 0 && !self::isSpecialSeat($rowIndex, $colIndex)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
    }
 ?>
