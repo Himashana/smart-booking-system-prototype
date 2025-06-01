@@ -10,6 +10,7 @@
 
     <!-- Display a drop down and a field to select the audience type -->
     <form action="select-seats.php" method="post" class="mb-3">
+        <input type="hidden" name="showId" value="<?php echo $_POST['showId']; ?>" />
         <input type="hidden" name="audienceType" value="<?php echo $_POST['audienceType'] ?? ''; ?>">
         <input type="hidden" name="audienceCount" value="<?php echo $_POST['audienceCount'] ?? 1; ?>">
         <select name="theatreSection" class="form-select" aria-label="Default select" required>

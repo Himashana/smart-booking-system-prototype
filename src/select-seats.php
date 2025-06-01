@@ -8,7 +8,6 @@
 
 <?php
     require_once __DIR__ . '/../src/SmartSeatingAlgorithm/SmartSeatingAlgorithm.php';
-    require_once __DIR__ . '/SmartSeatingAlgorithm/types.php';
  ?>
 
  <?php
@@ -63,6 +62,14 @@
         </tr>
     <?php endforeach; ?>
 </table>
+
+<center>
+    <form action="booking-confirmation.php" method="post" class="mt-3">
+        <input type="hidden" name="matrix" value='<?php echo json_encode($gridMatrix); ?>'>
+        <input type="hidden" name="showId" value="<?php echo $_POST['showId']; ?>" />
+        <button type="submit" class="btn btn-primary">Book now</button>
+    </form>
+</center>
 
 
 <?php closeContainer(); ?>

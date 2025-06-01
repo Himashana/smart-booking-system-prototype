@@ -20,6 +20,7 @@
     ?>
 
     <form action="select-section.php" method="post" class="mb-3">
+        <input type="hidden" name="showId" value="<?php echo $_POST['showId']; ?>" />
         <input type="hidden" name="audienceType" value="<?php echo $_POST['audienceType'] ?? ''; ?>">
         <input type="number" name="audienceCount" value="<?php echo $initSeatsCount; ?>" class="form-control" placeholder="Enter number of audience" required>
 

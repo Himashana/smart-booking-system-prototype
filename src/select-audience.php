@@ -8,8 +8,15 @@
 
 <?php require_once __DIR__ . '/SmartSeatingAlgorithm/types.php'; ?>
 
+<?php
+    if (!isset($_GET['show_id']) || empty($_GET['show_id'])) {
+        die("Invalid request!. Show ID is required to select audience type.");
+    }
+?>
+
     <!-- Display a drop down and a field to select the audience type -->
     <form action="select-seats-count.php" method="post" class="mb-3">
+        <input type="hidden" name="showId" value="<?php echo $_GET['show_id']; ?>" />
         <select name="audienceType" class="form-select" aria-label="Default select" required>
             <option selected disabled>Select Audience Type</option>
             <?php foreach (audienceTypes as $key => $value): ?>
