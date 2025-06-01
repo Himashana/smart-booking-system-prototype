@@ -70,6 +70,14 @@
                     data-row="<?php echo $rowIndex; ?>"
                     data-col="<?php echo $colIndex; ?>"
                     onclick="toggleSeat(this)"
+                    style="
+                    <?php if ($seat === 1){ ?>
+                        pointer-events: none;
+                        cursor: not-allowed;
+                        opacity: 0.9;
+                    <?php } else { ?>
+                        cursor: pointer;
+                    <?php } ?>"
                     >
                 </td>
             <?php endforeach; ?>
