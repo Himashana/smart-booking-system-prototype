@@ -3,10 +3,10 @@
 
     class Theater {
         function addTheater() {
-            $db = new DBconnect();
-            $db->MakeConn();
+            $dbconnection = new DBconnect();
+            $dbconnection->MakeConn();
             echo "Connected successfully";
-            $db->CloseConn();
+            $dbconnection->CloseConn();
         }
     }
 ?>

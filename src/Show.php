@@ -18,6 +18,19 @@
             }
         }
 
+        function getShowById($showId) {
+            $dbconnection = new DBconnect();
+            $dbconnection->MakeConn();
+            
+            $query = 'SELECT * FROM shows WHERE id = "' . $showId . '"';
+            $result = $dbconnection->ExecuteQuery($query);
+            $show = mysqli_fetch_assoc($result);
+
+            $dbconnection->CloseConn();
+
+            return $show;
+        }
+
         function getAllShows() {
             $dbconnection = new DBconnect();
             $dbconnection->MakeConn();

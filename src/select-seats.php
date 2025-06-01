@@ -1,6 +1,6 @@
 <?php
     include('site.Master.php'); // Including the site master page.
-    createProperties($filePathPrefix = "", $pageTitle = "Book a show");
+    createProperties($filePathPrefix = "./", $pageTitle = "Book a show");
     createHeader($menu = true); // Creating the header.
 ?>
 
@@ -22,6 +22,17 @@
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0]
     ];
+
+    include('./Booking.php');
+
+    $booking = new Booking();
+    $bookings = $booking->getBookings($_POST['showId']);
+
+    foreach ($bookings as $booking) {
+        $r = $booking['row'];
+        $c = $booking['col'];
+        $gridMatrix[$r][$c] = 1;
+    }
 
     $gridMatrix = SmartSeatingAlgorithm::predictSeats(
         $gridMatrix,
@@ -49,10 +60,10 @@
                 <td class="text-center
                     <?php if ($seat === 0): ?>
                         bg-success
-                    <?php elseif ($seat === 1): ?>
-                        bg-danger
-                    <?php else: ?>
+                    <?php elseif ($seat === 2): ?>
                         bg-warning
+                    <?php else: ?>
+                        bg-secondary
                     <?php endif; ?>"
                     width="5%"
                     height="50px"

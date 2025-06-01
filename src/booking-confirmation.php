@@ -1,6 +1,6 @@
 <?php
     include('site.Master.php'); // Including the site master page.
-    createProperties($filePathPrefix = "", $pageTitle = "Book a show");
+    createProperties($filePathPrefix = "./", $pageTitle = "Book a show");
     createHeader($menu = true); // Creating the header.
 ?>
 
@@ -10,6 +10,11 @@
     require_once __DIR__ . '/../src/SmartSeatingAlgorithm/SmartSeatingAlgorithm.php';
 
     $unitPricePerSeat = 120;
+
+    include('./Show.php');
+
+    $show = new Show();
+    $showDetails = $show->getShowById($_POST['showId']);
  ?>
 
 <center>
@@ -31,6 +36,8 @@
                         }
                     }
                 }
+                echo "Show: " . $showDetails['movie_title'] . "<br>";
+                echo "Show date & time: " . $showDetails['showtime'] . "<br>";
                 echo "Selected seats: " . implode(", ", $bookedSeats);
                 echo "<br>";
                 echo "Total seats: " . count($bookedSeats);
