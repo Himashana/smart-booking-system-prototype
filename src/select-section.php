@@ -8,6 +8,27 @@
 
 <?php require_once __DIR__ . '/SmartSeatingAlgorithm/types.php'; ?>
 
+<?php
+    // Redirect to next page if the audience type is VIP, patron or disabled person
+    if (isset($_POST['audienceType']) && ($_POST['audienceType'] === audienceTypes['VIP'] || $_POST['audienceType'] === audienceTypes['DISABLED_PERSON'] || $_POST['audienceType'] === audienceTypes['PATRON'])) {
+        $postData = $_POST;
+        ?>
+
+        <form id="redirectForm" action="select-seats.php" method="post">
+            <?php foreach ($postData as $key => $value): ?>
+                <input type="hidden" name="<?php echo htmlspecialchars($key); ?>" value="<?php echo htmlspecialchars($value); ?>">
+            <?php endforeach; ?>
+        </form>
+
+        <script>
+            document.getElementById('redirectForm').submit();
+        </script>
+
+        <?php
+        exit();
+    }
+?>
+
     <!-- Display a drop down and a field to select the audience type -->
     <form action="select-seats.php" method="post" class="mb-3">
         <input type="hidden" name="showId" value="<?php echo $_POST['showId']; ?>" />
