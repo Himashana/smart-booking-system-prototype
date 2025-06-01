@@ -1,6 +1,6 @@
 <?php
     include('site.Master.php'); // Including the site master page.
-    createProperties($filePathPrefix = "./", $pageTitle = "Book a show");
+    createProperties($filePathPrefix = "./", $pageTitle = "Complete Booking");
     createHeader($menu = true); // Creating the header.
 ?>
 

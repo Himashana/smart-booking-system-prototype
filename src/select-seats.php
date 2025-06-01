@@ -2,6 +2,7 @@
     include('site.Master.php'); // Including the site master page.
     createProperties($filePathPrefix = "./", $pageTitle = "Book a show");
     createHeader($menu = true); // Creating the header.
+    session_start();
 ?>
 
 <?php createContainer(); ?>
@@ -34,12 +35,14 @@
         $gridMatrix[$r][$c] = 1;
     }
 
-    $gridMatrix = SmartSeatingAlgorithm::predictSeats(
-        $gridMatrix,
-        $_POST['audienceType'] ?? "",
-        $_POST['theatreSection'] ?? "",
-        $_POST['audienceCount'] ?? 1
-    );
+    if (!(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true)) {
+        $gridMatrix = SmartSeatingAlgorithm::predictSeats(
+            $gridMatrix,
+            $_POST['audienceType'] ?? "",
+            $_POST['theatreSection'] ?? "",
+            $_POST['audienceCount'] ?? 1
+        );
+    }
  ?>
 
 <div style="background-color: #3d3a39; color: white; padding: 20px; padding-top: 40px; padding-bottom: 40px; text-align: center; margin-bottom: 20px;">
