@@ -19,70 +19,44 @@
             $theatreSection,
             $audienceCount,
         ){
+            $subset = array_slice($gridMatrix, 0, 2);
+            $baseIndex = 0;
+
+            if ($theatreSection == theatreSections['ORCHESTRA']) {
+                $subset = array_slice($gridMatrix, 0, 2);
+                $baseIndex = 0;
+            } elseif ($theatreSection == theatreSections['MEZZANINE']) {
+                $subset = array_slice($gridMatrix, 2, 4);
+                $baseIndex = 2;
+            } elseif ($theatreSection == theatreSections['BALCONY']) {
+                $subset = array_slice($gridMatrix, 5, 6);
+                $baseIndex = 5;
+            }
+
             if ($audienceType == audienceTypes['SINGLE']){
                 // Set 1 in the first avaiable seat for the specific section in the matrix
-                if ($theatreSection == theatreSections['ORCHESTRA']) {
-                    for ($row = 0; $row < count($gridMatrix); $row++) {
-                        if (!(self::getAvailableSeatsInRow($gridMatrix[$row]) == 2 && self::isCloserSeatsAvailable($gridMatrix[$row]))){
-                            for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                                if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
-                                    $gridMatrix[$row][$col] = 1;
-                                    return $gridMatrix;
-                                }
-                            }
-                        }
-                    }
-                } elseif ($theatreSection == theatreSections['MEZZANINE']) {
-                    // Start allocation from the 3rd row
-                    for ($row = 2; $row < count($gridMatrix); $row++) {
-                        if (!(self::getAvailableSeatsInRow($gridMatrix[$row]) == 2 && self::isCloserSeatsAvailable($gridMatrix[$row]))){
-                            for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                                if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
-                                    $gridMatrix[$row][$col] = 1;
-                                    return $gridMatrix;
-                                }
-                            }
-                        }
-                    }
-                } elseif ($theatreSection == theatreSections['BALCONY']) {
-                    // Start allocation from the 4th row
-                    for ($row = 5; $row < count($gridMatrix); $row++) {
-                        if (!(self::getAvailableSeatsInRow($gridMatrix[$row]) == 2 && self::isCloserSeatsAvailable($gridMatrix[$row]))){
-                            for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                                if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
-                                    $gridMatrix[$row][$col] = 1;
-                                    return $gridMatrix;
-                                }
+                foreach ($subset as $offset => $row) {
+                    $actualRowIndex = $baseIndex + $offset;
+                    if (!(self::getAvailableSeatsInRow($row) == 2 && self::isCloserSeatsAvailable($row))){
+                        for ($col = 0; $col < count($row); $col++) {
+                            if ($gridMatrix[$actualRowIndex][$col] == 0 && !self::isSpecialSeat($actualRowIndex, $col)) {
+                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                return $gridMatrix;
                             }
                         }
                     }
                 }
             } elseif ($audienceType == audienceTypes['GROUP']) {
-                $subset = array_slice($gridMatrix, 2, 4);
-                $baseIndex = 2;
                 $insetCount = 0;
-
-                if ($theatreSection == theatreSections['ORCHESTRA']) {
-                    for ($row = 0; $row < 2; $row++) {
-                        if (self::getAvailableSeatsInRow($gridMatrix[$row]) == $audienceCount && self::isCloserSeatsAvailable($gridMatrix[$row], $audienceCount)) {
-                            for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                                if ($gridMatrix[$row][$col] == 0) {
-                                    $gridMatrix[$row][$col] = 1;
-                                    $insetCount++;
-                                    if ($insetCount >= $audienceCount) {
-                                        return $gridMatrix;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Insert into row with minimum availability:
-                    $rowWithMinAvailability = self::getRowWithMinimumAvailability(array_slice($gridMatrix, 0, 2), $audienceCount);
-                    if ($rowWithMinAvailability) {
-                        for ($col = 0; $col < count($rowWithMinAvailability); $col++) {
-                            if ($rowWithMinAvailability[$col] == 0) {
-                                $gridMatrix[array_search($rowWithMinAvailability, $gridMatrix)][$col] = 1;
+                foreach ($subset as $offset => $row) {
+                    if (
+                        self::getAvailableSeatsInRow($row) == $audienceCount &&
+                        self::isCloserSeatsAvailable($row, $audienceCount)
+                    ) {
+                        $actualRowIndex = $baseIndex + $offset;
+                        for ($col = 0; $col < count($row); $col++) {
+                            if ($gridMatrix[$actualRowIndex][$col] == 0) {
+                                $gridMatrix[$actualRowIndex][$col] = 1;
                                 $insetCount++;
                                 if ($insetCount >= $audienceCount) {
                                     return $gridMatrix;
@@ -90,73 +64,19 @@
                             }
                         }
                     }
+                }
 
-                    for ($row = 0; $row < count($gridMatrix); $row++) {
-                        for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                            if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
-                                $gridMatrix[$row][$col] = 1;
-                                return $gridMatrix;
-                            }
-                        }
-                    }
-                } elseif ($theatreSection == theatreSections['MEZZANINE']) {
-                    for ($row = 2; $row < 5; $row++) {
-                        if (self::getAvailableSeatsInRow($gridMatrix[$row]) == $audienceCount && self::isCloserSeatsAvailable($gridMatrix[$row], $audienceCount)) {
-                            for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                                if ($gridMatrix[$row][$col] == 0) {
-                                    $gridMatrix[$row][$col] = 1;
-                                    $insetCount++;
-                                    if ($insetCount >= $audienceCount) {
-                                        return $gridMatrix;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Insert into row with minimum availability:
-                    $rowWithMinAvailability = self::getRowWithMinimumAvailability($subset, $audienceCount);
-                    if ($rowWithMinAvailability) {
-                        $insetCount = 0;
-                        foreach ($subset as $offset => $row) {
-                            if ($row === $rowWithMinAvailability) {
-                                $actualRowIndex = $baseIndex + $offset;
-                                for ($col = 0; $col < count($row); $col++) {
-                                    if ($gridMatrix[$actualRowIndex][$col] == 0) {
-                                        $gridMatrix[$actualRowIndex][$col] = 1;
-                                        $insetCount++;
-                                        if ($insetCount >= $audienceCount) {
-                                            return $gridMatrix;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Insert into row with maximum availability and move to next available line to fill the exceeded count
-                    $rowWithMaxAvailability = self::getRowWithMaximumAvailability($subset);
-                    if ($rowWithMaxAvailability) {
-                        $insetCount = 0;
-
-                        // Get the index of the max availability row in the gridMatrix
-                        $startOffset = null;
-                        foreach ($subset as $offset => $row) {
-                            if ($row === $rowWithMaxAvailability) {
-                                $startOffset = $offset;
-                                break;
-                            }
-                        }
-
-                        // Insert from that row and continue through next rows for the exceeded count
-                        for ($i = $startOffset; $i < count($subset); $i++) {
-                            $actualRowIndex = $baseIndex + $i;
-
-                            for ($col = 0; $col < count($gridMatrix[$actualRowIndex]); $col++) {
+                // Insert into row with minimum availability:
+                $rowWithMinAvailability = self::getRowWithMinimumAvailability($subset, $audienceCount);
+                if ($rowWithMinAvailability) {
+                    $insetCount = 0;
+                    foreach ($subset as $offset => $row) {
+                        if ($row === $rowWithMinAvailability) {
+                            $actualRowIndex = $baseIndex + $offset;
+                            for ($col = 0; $col < count($row); $col++) {
                                 if ($gridMatrix[$actualRowIndex][$col] == 0) {
                                     $gridMatrix[$actualRowIndex][$col] = 1;
                                     $insetCount++;
-
                                     if ($insetCount >= $audienceCount) {
                                         return $gridMatrix;
                                     }
@@ -164,15 +84,70 @@
                             }
                         }
                     }
+                }
 
-                    // for ($row = 0; $row < count($gridMatrix); $row++) {
-                    //     for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
-                    //         if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
-                    //             $gridMatrix[$row][$col] = 1;
-                    //             return $gridMatrix;
-                    //         }
-                    //     }
-                    // }
+                // Insert into row with maximum availability and move to next available line to fill the exceeded count
+                $rowWithMaxAvailability = self::getRowWithMaximumAvailability($subset);
+                if ($rowWithMaxAvailability) {
+                    $insetCount = 0;
+
+                    // Get the index of the max availability row in the gridMatrix
+                    $startOffset = null;
+                    foreach ($subset as $offset => $row) {
+                        if ($row === $rowWithMaxAvailability) {
+                            $startOffset = $offset;
+                            break;
+                        }
+                    }
+
+                    // Insert from that row and continue through next rows for the exceeded count
+                    for ($i = $startOffset; $i < count($subset); $i++) {
+                        $actualRowIndex = $baseIndex + $i;
+
+                        for ($col = 0; $col < count($gridMatrix[$actualRowIndex]); $col++) {
+                            if ($gridMatrix[$actualRowIndex][$col] == 0) {
+                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $insetCount++;
+
+                                if ($insetCount >= $audienceCount) {
+                                    return $gridMatrix;
+                                }
+                            }
+                        }
+                    }
+                }
+            } elseif ($audienceType == audienceTypes['COUPLE']) {
+                // Book first two available seats for the specific section in the matrix
+                foreach ($subset as $offset => $row) {
+                    $actualRowIndex = $baseIndex + $offset;
+                    $insetCount = 0;
+
+                    if (!(self::getAvailableSeatsInRow($row) == 2 && self::isCloserSeatsAvailable($row, 2))){
+                        for ($col = 0; $col < count($row); $col++) {
+                            if ($gridMatrix[$actualRowIndex][$col] == 0) {
+                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $insetCount++;
+                                if ($insetCount >= 2) {
+                                    return $gridMatrix;
+                                }
+                            }
+                        }
+                    }
+                }
+            } elseif ($audienceType == audienceTypes['VIP']) {
+                // Book the first available VIP seat
+                foreach (self::$seatsForVIP as $seat) {
+                    if ($gridMatrix[$seat[0]][$seat[1]] == 0) {
+                        $gridMatrix[$seat[0]][$seat[1]] = 1;
+                        return $gridMatrix;
+                    }
+                }
+            } elseif ($audienceType == audienceTypes['DISABLED_PERSON']) {
+                foreach (self::$seatsForDisabledPeople as $seat) {
+                    if ($gridMatrix[$seat[0]][$seat[1]] == 0) {
+                        $gridMatrix[$seat[0]][$seat[1]] = 1;
+                        return $gridMatrix;
+                    }
                 }
             }
 
