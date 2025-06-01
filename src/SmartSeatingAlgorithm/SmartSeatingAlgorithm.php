@@ -134,6 +134,37 @@
                         }
                     }
 
+                    // Insert into row with maximum availability and move to next available line to fill the exceeded count
+                    $rowWithMaxAvailability = self::getRowWithMaximumAvailability($subset);
+                    if ($rowWithMaxAvailability) {
+                        $insetCount = 0;
+
+                        // Get the index of the max availability row in the gridMatrix
+                        $startOffset = null;
+                        foreach ($subset as $offset => $row) {
+                            if ($row === $rowWithMaxAvailability) {
+                                $startOffset = $offset;
+                                break;
+                            }
+                        }
+
+                        // Insert from that row and continue through next rows for the exceeded count
+                        for ($i = $startOffset; $i < count($subset); $i++) {
+                            $actualRowIndex = $baseIndex + $i;
+
+                            for ($col = 0; $col < count($gridMatrix[$actualRowIndex]); $col++) {
+                                if ($gridMatrix[$actualRowIndex][$col] == 0) {
+                                    $gridMatrix[$actualRowIndex][$col] = 1;
+                                    $insetCount++;
+
+                                    if ($insetCount >= $audienceCount) {
+                                        return $gridMatrix;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // for ($row = 0; $row < count($gridMatrix); $row++) {
                     //     for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
                     //         if ($gridMatrix[$row][$col] == 0 && !self::isSpecialSeat($row, $col)) {
@@ -183,7 +214,7 @@
         }
 
         // Get number of available seats in a row
-        public static function getAvailableSeatsInRow($row) {
+        private static function getAvailableSeatsInRow($row) {
             $count = 0;
             foreach ($row as $seat) {
                 if ($seat == 0 && !self::isSpecialSeat($row, array_search($seat, $row))) {
@@ -194,7 +225,7 @@
         }
 
         // Take multiple rows and return row with minimum possible availability for given number of seats (all are close together)
-        public static function getRowWithMinimumAvailability($rows, $audienceCount) {
+        private static function getRowWithMinimumAvailability($rows, $audienceCount) {
             $minRow = null;
             $minCount = PHP_INT_MAX;
 
@@ -207,6 +238,22 @@
             }
 
             return $minRow;
+        }
+
+        private static function getRowWithMaximumAvailability($rows) {
+            // Insert the available seats count of each row into an array
+            $maxRow = null;
+            $maxCount = 0;
+
+            foreach ($rows as $row) {
+                $availableSeats = self::getAvailableSeatsInRow($row);
+                if ($availableSeats > $maxCount) {
+                    $maxCount = $availableSeats;
+                    $maxRow = $row;
+                }
+            }
+
+            return $maxRow;
         }
    }
 ?>
