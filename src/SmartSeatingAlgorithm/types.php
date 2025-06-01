@@ -5,7 +5,7 @@ const audienceTypes = [
     'GROUP' => 'group', // or family
     'COUPLE' => 'couple',
     'VIP' => 'vip',
-    'DISABLED_PERSON' => 'disabled_person',
+    'DISABLED_PERSON' => 'disabled person',
     'PATRON' => 'patron',
     'ADMIN' => 'admin',
 ];
