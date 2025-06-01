@@ -19,7 +19,8 @@
         }
     ?>
 
-    <form action="select-seats-count.php" method="post" class="mb-3">
+    <form action="select-section.php" method="post" class="mb-3">
+        <input type="hidden" name="audienceType" value="<?php echo $_POST['audienceType'] ?? ''; ?>">
         <input type="number" name="audienceCount" value="<?php echo $initSeatsCount; ?>" class="form-control" placeholder="Enter number of audience" required>
 
         <button type="submit" class="btn btn-primary mt-3 w-100">Next</button>
