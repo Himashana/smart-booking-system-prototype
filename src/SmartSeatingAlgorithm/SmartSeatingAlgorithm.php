@@ -9,6 +9,8 @@
 
 <?php
    class SmartSeatingAlgorithm {
+        // Note: Matrix values: 0 = empty seat, 1 = booked seat, 2 = predicted seat
+        
         // Static data for special seats allocation for now
         private static $seatsForDisabledPeople = [[4, 5], [4, 6]];
         private static $seatsForVIP = [[6, 0], [6, 1], [6, 5], [6, 6]];
@@ -48,7 +50,7 @@
                     if (!(self::getAvailableSeatsInRow($row) == 2 && self::isCloserSeatsAvailable($row))){
                         for ($col = 0; $col < count($row); $col++) {
                             if ($gridMatrix[$actualRowIndex][$col] == 0 && !self::isSpecialSeat($actualRowIndex, $col)) {
-                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $gridMatrix[$actualRowIndex][$col] = 2;
                                 return $gridMatrix;
                             }
                         }
@@ -60,7 +62,7 @@
                     for ($row = 0; $row < count($gridMatrix); $row++) {
                         for ($col = 0; $col < count($gridMatrix[$row]); $col++) {
                             if ($gridMatrix[$row][$col] == 0 && self::isSpecialSeat($row, $col)) {
-                                $gridMatrix[$row][$col] = 1;
+                                $gridMatrix[$row][$col] = 2;
                                 return $gridMatrix;
                             }
                         }
@@ -76,7 +78,7 @@
                         $actualRowIndex = $baseIndex + $offset;
                         for ($col = 0; $col < count($row); $col++) {
                             if ($gridMatrix[$actualRowIndex][$col] == 0) {
-                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $gridMatrix[$actualRowIndex][$col] = 2;
                                 $insetCount++;
                                 if ($insetCount >= $audienceCount) {
                                     return $gridMatrix;
@@ -95,7 +97,7 @@
                             $actualRowIndex = $baseIndex + $offset;
                             for ($col = 0; $col < count($row); $col++) {
                                 if ($gridMatrix[$actualRowIndex][$col] == 0) {
-                                    $gridMatrix[$actualRowIndex][$col] = 1;
+                                    $gridMatrix[$actualRowIndex][$col] = 2;
                                     $insetCount++;
                                     if ($insetCount >= $audienceCount) {
                                         return $gridMatrix;
@@ -126,7 +128,7 @@
 
                         for ($col = 0; $col < count($gridMatrix[$actualRowIndex]); $col++) {
                             if ($gridMatrix[$actualRowIndex][$col] == 0) {
-                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $gridMatrix[$actualRowIndex][$col] = 2;
                                 $insetCount++;
 
                                 if ($insetCount >= $audienceCount) {
@@ -146,7 +148,7 @@
                         for ($col = 0; $col < count($row); $col++) {
                             // Check if the next closer seat is also available
                             if ($gridMatrix[$actualRowIndex][$col] == 0 && ($insetCount < $audienceCount && $gridMatrix[$actualRowIndex][$col + 1] == 0)) {
-                                $gridMatrix[$actualRowIndex][$col] = 1;
+                                $gridMatrix[$actualRowIndex][$col] = 2;
                                 $insetCount++;
                                 if ($insetCount >= $audienceCount) {
                                     return $gridMatrix;
@@ -159,7 +161,7 @@
                 // Book the first available VIP seat
                 foreach (self::$seatsForVIP as $seat) {
                     if ($gridMatrix[$seat[0]][$seat[1]] == 0) {
-                        $gridMatrix[$seat[0]][$seat[1]] = 1;
+                        $gridMatrix[$seat[0]][$seat[1]] = 2;
                         return $gridMatrix;
                     }
                 }
@@ -174,7 +176,7 @@
 
                 foreach (self::$seatsForDisabledPeople as $seat) {
                     if ($gridMatrix[$seat[0]][$seat[1]] == 0) {
-                        $gridMatrix[$seat[0]][$seat[1]] = 1;
+                        $gridMatrix[$seat[0]][$seat[1]] = 2;
                         return $gridMatrix;
                     }
                 }
