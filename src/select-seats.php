@@ -67,6 +67,9 @@
                     <?php endif; ?>"
                     width="5%"
                     height="50px"
+                    data-row="<?php echo $rowIndex; ?>"
+                    data-col="<?php echo $colIndex; ?>"
+                    onclick="toggleSeat(this)"
                     >
                 </td>
             <?php endforeach; ?>
@@ -76,11 +79,35 @@
 
 <center>
     <form action="booking-confirmation.php" method="post" class="mt-3">
-        <input type="hidden" name="matrix" value='<?php echo json_encode($gridMatrix); ?>'>
+        <input type="hidden" name="matrix" id="seatMatrixInput" value='<?php echo json_encode($gridMatrix); ?>'>
         <input type="hidden" name="showId" value="<?php echo $_POST['showId']; ?>" />
         <button type="submit" class="btn btn-primary">Book now</button>
     </form>
 </center>
+
+<script>
+    // Load matrix from PHP to JavaScript
+    let matrix = <?php echo json_encode($gridMatrix); ?>;
+
+    function toggleSeat(el) {
+        const row = parseInt(el.dataset.row);
+        const col = parseInt(el.dataset.col);
+
+        // Toggle seat
+        if (matrix[row][col] = matrix[row][col] === 2) {
+            matrix[row][col] = 0; // Unselect seat
+            el.classList.remove('bg-warning');
+            el.classList.add('bg-success');
+        } else {
+            matrix[row][col] = 2; // Select seat
+            el.classList.remove('bg-success');
+            el.classList.add('bg-warning');
+        }
+
+        // Update hidden input with latest matrix
+        document.getElementById('seatMatrixInput').value = JSON.stringify(matrix);
+    }
+</script>
 
 
 <?php closeContainer(); ?>
