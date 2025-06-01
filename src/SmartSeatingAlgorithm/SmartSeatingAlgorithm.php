@@ -143,6 +143,14 @@
                     }
                 }
             } elseif ($audienceType == audienceTypes['DISABLED_PERSON']) {
+                // Reorder $seatsForDisabledPeople from lower row to higher row and from higher column to lower column
+                usort(self::$seatsForDisabledPeople, function ($a, $b) {
+                    if ($a[0] == $b[0]) {
+                        return $b[1] - $a[1];
+                    }
+                    return $a[0] - $b[0];
+                });
+
                 foreach (self::$seatsForDisabledPeople as $seat) {
                     if ($gridMatrix[$seat[0]][$seat[1]] == 0) {
                         $gridMatrix[$seat[0]][$seat[1]] = 1;
