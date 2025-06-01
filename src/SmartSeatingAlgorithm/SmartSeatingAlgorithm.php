@@ -33,6 +33,14 @@
                 $baseIndex = 5;
             }
 
+            if ($audienceType == audienceTypes['PATRON']) {
+                $subset = array_slice($gridMatrix, 4, 6);
+                $baseIndex = 4;
+
+                // Follow the same logic as for GROUP audience type within the specific section for patrons as they may come as groups
+                $audienceType = audienceTypes['GROUP'];
+            }
+
             if ($audienceType == audienceTypes['SINGLE']){
                 // Set 1 in the first avaiable seat for the specific section in the matrix
                 foreach ($subset as $offset => $row) {
@@ -122,12 +130,13 @@
                     $actualRowIndex = $baseIndex + $offset;
                     $insetCount = 0;
 
-                    if (!(self::getAvailableSeatsInRow($row) == 2 && self::isCloserSeatsAvailable($row, 2))){
+                    if (self::getAvailableSeatsInRow($row) >= 2 && self::isCloserSeatsAvailable($row, 2)){
                         for ($col = 0; $col < count($row); $col++) {
-                            if ($gridMatrix[$actualRowIndex][$col] == 0) {
+                            // Check if the next closer seat is also available
+                            if ($gridMatrix[$actualRowIndex][$col] == 0 && ($insetCount < $audienceCount && $gridMatrix[$actualRowIndex][$col + 1] == 0)) {
                                 $gridMatrix[$actualRowIndex][$col] = 1;
                                 $insetCount++;
-                                if ($insetCount >= 2) {
+                                if ($insetCount >= $audienceCount) {
                                     return $gridMatrix;
                                 }
                             }
