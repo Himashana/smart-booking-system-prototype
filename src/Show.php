@@ -1,12 +1,12 @@
 <?php
     include($filePathPrefix . 'dbConfig.php');
 
-    class Theater {
-        function addTheater($name, $rows, $columns) {
+    class Show {
+        function addShow($theaterId, $movieTitle, $showTime) {
             $dbconnection = new DBconnect();
             $dbconnection->MakeConn();
             
-            $query = 'INSERT INTO theaters (name, t_rows, t_cols) VALUES ("' . $name . '", ' . $rows . ', ' . $columns . ')';
+            $query = 'INSERT INTO shows (theater_id, movie_title, showtime) VALUES ("' . $theaterId . '", "' . $movieTitle . '", "' . $showTime . '")';
             $result = $dbconnection->ExecuteQuery($query);
 
             $dbconnection->CloseConn();
@@ -18,37 +18,34 @@
             }
         }
 
-        function getTheaterById($id) {
+        function getShowById($showId) {
             $dbconnection = new DBconnect();
             $dbconnection->MakeConn();
             
-            $query = 'SELECT * FROM theaters WHERE id = ' . $id;
+            $query = 'SELECT * FROM shows WHERE id = "' . $showId . '"';
             $result = $dbconnection->ExecuteQuery($query);
+            $show = mysqli_fetch_assoc($result);
 
-            if ($row = mysqli_fetch_assoc($result)) {
-                $dbconnection->CloseConn();
-                return $row;
-            } else {
-                $dbconnection->CloseConn();
-                return null;
-            }
+            $dbconnection->CloseConn();
+
+            return $show;
         }
 
-        function getTheaters() {
+        function getAllShows() {
             $dbconnection = new DBconnect();
             $dbconnection->MakeConn();
             
-            $query = 'SELECT * FROM theaters';
+            $query = 'SELECT * FROM shows';
             $result = $dbconnection->ExecuteQuery($query);
+            $shows = [];
 
-            $theaters = [];
             while ($row = mysqli_fetch_assoc($result)) {
-                $theaters[] = $row;
+                $shows[] = $row;
             }
 
             $dbconnection->CloseConn();
 
-            return $theaters;
+            return $shows;
         }
     }
 ?>

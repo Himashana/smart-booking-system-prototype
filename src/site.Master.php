@@ -31,12 +31,12 @@
                 <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <!-- <div class="navbar-collapse collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" style="color:#6E5A35;" aria-current="page" href="<?php echo $GLOBALS['filePathPrefix']; ?>#">ABC</a></li>
                         <li class="nav-item"><a class="nav-link active" style="color:#6E5A35;" aria-current="page" href="<?php echo $GLOBALS['filePathPrefix']; ?>#">DEF</a></li>
                     </ul>
-                </div>
+                </div> -->
             </div>
         </nav>
     <?php } ?>
@@ -46,7 +46,7 @@
 
 <?php 
     function createContainer(){
-        echo '<div class="container">';
+        echo '<div class="container" style="margin-top: 20px; margin-bottom: 20px;">';
     }
 
     function closeContainer(){
